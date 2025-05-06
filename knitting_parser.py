@@ -42,47 +42,47 @@ class KnittingPatternParser:
     def parse_pattern(self, pattern_text: str) -> Dict[str, Any]:
         """解析编织图解文本，返回JSON格式的解析结果"""
         prompt = f"""
-        请解析以下编织图解，并以JSON格式输出结果。JSON应包含以下信息：
-        - 总行数
-        - 每行的总针数
-        - 每针的编号和对应的针法
-        - 每行的原始编织说明文本
-        
-        编织图解：
+        请解析以下编织图解，并以JSON格式输出结果。要求如下：
+
+        1. JSON 顶层包含：
+           - "total_rows"：仅统计针法行（即 type 为 "row" 的行）的总数
+           - "pattern"：数组，**顺序必须与原始 pattern text 完全一致**，每一项对应原文中的一行或一段说明
+
+        2. 对于每一行针法（如"第1行：..."），输出如下结构：
+           {{
+             "type": "row",
+             "row_number": 行号,
+             "stitches_per_row": 针数,
+             "stitches": [
+               {{
+                 "stitch_number": 针号,
+                 "stitch_type": "针法类型"
+               }}
+             ],
+             "instruction": "该行的原始编织说明文本"
+           }}
+
+        3. 对于非针法类说明（如起针、收针、总结、藏线头等），输出如下结构：
+           {{
+             "type": "meta",
+             "instruction": "该说明的原文"
+           }}
+
+        4. pattern 数组中的每一项，顺序必须与原始 pattern text 完全一致，不能打乱、不能合并、不能省略。
+
+        5. 只输出一份有效的 JSON，不要有多余内容，不要有 markdown 代码块标记。
+
+        6. stitches 数组必须详细列出每一针的信息，不能省略。
+
+        原始编织图解如下：
         {pattern_text}
-        
-        请以以下JSON格式输出（不要包含任何markdown代码块标记，如```json或```）：
-        {{
-            "total_rows": 整数,
-            "pattern": [
-                {{
-                    "row_number": 行号,
-                    "stitches_per_row": 该行的总针数,
-                    "stitches": [
-                        {{
-                            "stitch_number": 针号,
-                            "stitch_type": "针法类型"
-                        }}
-                    ],
-                    "instruction": "该行的原始编织说明文本"
-                }}
-            ]
-        }}
-        
-        注意：
-        1. 输出必须是有效的JSON格式，不能有任何多余的文字或代码块标记。
-        2. 对于重复的针法（如"1下针，1上针，重复到结束"），需要展开为具体的每一针。
-        3. 如果没有明确每行的针数，则使用起针数作为每行针数。
-        4. stitches数组必须包含该行所有针的详细信息。
-        5. instruction字段需要包含该行的完整原始编织说明文本，包括所有相关的说明和换行。
-        6. 只输出一份JSON，不要重复，不要有多余内容。
         """
 
         try:
             response = self.client.chat.completions.create(
                 model="gpt-4.1",
                 messages=[
-                    {"role": "system", "content": "你是一个专业的编织图解解析器，请将编织图解转换为结构化的JSON数据。对于重复的针法，需要展开为具体的每一针。例如，如果一行是'1下针，1上针，重复到结束（共20针）'，那么stitches数组应该包含20个元素，交替显示下针和上针。同时，请保持每行编织说明的原始格式，包括所有相关的说明和换行。"},
+                    {"role": "system", "content": "你是一个专业的编织图解解析器，请将编织图解转换为结构化的JSON数据。对于重复的针法，需要展开为具体的每一针。同时，请保持每行编织说明的原始格式，包括所有相关的说明和换行。对于非针法类的说明（如起针、收针、总结等），请将其识别为meta类型，并保持原有顺序。"},
                     {"role": "user", "content": prompt}
                 ]
             )

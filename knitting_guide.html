@@ -64,51 +64,43 @@
             }
         }
 
-        // 更新当前行显示
-        function updateCurrentRow() {
-            const rowCounter = document.getElementById('row-counter');
-            const decrementButton = document.getElementById('decrementButton');
-            const incrementButton = document.getElementById('incrementButton');
-
-            rowCounter.textContent = currentRow;
-            decrementButton.disabled = currentRow <= 1;
-            incrementButton.disabled = currentRow >= patternData.total_rows;
-
-            // 更新文本指示和图解高亮
-            const elements = {
-                instructions: document.querySelectorAll('.instruction-line'),
-                patterns: document.querySelectorAll('.pattern-grid')
-            };
-
-            Object.entries(elements).forEach(([type, elements]) => {
-                elements.forEach((el, index) => {
-                    const rowNum = index + 1;
-                    el.classList.remove('completed', 'active');
-                    
-                    if (rowNum < currentRow) {
-                        el.classList.add('completed');
-                    } else if (rowNum === currentRow) {
-                        el.classList.add('active');
-                        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        // 校验数据格式，只校验row类型
+        function validatePatternData(data) {
+            if (!data || typeof data !== 'object') {
+                throw new Error('数据格式错误：需要是一个对象');
+            }
+            if (typeof data.total_rows !== 'number') {
+                throw new Error('数据格式错误：缺少 total_rows 或格式不正确');
+            }
+            if (!Array.isArray(data.pattern)) {
+                throw new Error('数据格式错误：缺少 pattern 数组');
+            }
+            data.pattern.forEach((row, index) => {
+                if (row.type === 'row') {
+                    if (
+                        typeof row.row_number !== 'number' ||
+                        typeof row.stitches_per_row !== 'number' ||
+                        !Array.isArray(row.stitches)
+                    ) {
+                        throw new Error(`第 ${index + 1} 行数据格式错误`);
                     }
-                });
+                    if (row.stitches.length !== row.stitches_per_row) {
+                        throw new Error(`第 ${index + 1} 行的针数与 stitches_per_row 不匹配`);
+                    }
+                }
             });
+            return true;
         }
 
-        // 增加行数
-        function incrementRow() {
-            if (currentRow < patternData.total_rows) {
-                currentRow++;
-                updateCurrentRow();
-            }
-        }
-
-        // 减少行数
-        function decrementRow() {
-            if (currentRow > 1) {
-                currentRow--;
-                updateCurrentRow();
-            }
+        // 获取所有row类型的索引
+        function getRowIndexes(patternArr) {
+            const indexes = [];
+            patternArr.forEach((item, idx) => {
+                if (item.type === 'row') {
+                    indexes.push(idx);
+                }
+            });
+            return indexes;
         }
 
         // 渲染编织说明
@@ -116,22 +108,24 @@
             const container = document.getElementById('instructions');
             container.innerHTML = '';
             instructionLines = [];
-            
-            patternArr.forEach(row => {
+            patternArr.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'instruction-line';
-                
-                const rowNumber = document.createElement('span');
-                rowNumber.className = 'instruction-row-number';
-                rowNumber.textContent = `${row.row_number}. `;
-                
-                const instructionText = document.createElement('span');
-                instructionText.className = 'instruction-text';
-                instructionText.textContent = row.instruction;
-                
-                div.appendChild(rowNumber);
-                div.appendChild(instructionText);
-                
+                if (item.type === 'row') {
+                    const rowNumber = document.createElement('span');
+                    rowNumber.className = 'instruction-row-number';
+                    rowNumber.textContent = `${item.row_number}. `;
+                    const instructionText = document.createElement('span');
+                    instructionText.className = 'instruction-text';
+                    instructionText.textContent = item.instruction;
+                    div.appendChild(rowNumber);
+                    div.appendChild(instructionText);
+                } else {
+                    const instructionText = document.createElement('span');
+                    instructionText.className = 'instruction-text';
+                    instructionText.textContent = item.instruction;
+                    div.appendChild(instructionText);
+                }
                 container.appendChild(div);
                 instructionLines.push(div);
             });
@@ -141,54 +135,127 @@
         function renderPattern(data) {
             const patternElement = document.getElementById('pattern');
             patternElement.innerHTML = '';
-
-            data.pattern.forEach(row => {
-                const rowContainer = document.createElement('div');
-                rowContainer.className = 'row-container';
-
-                const rowNumber = document.createElement('div');
-                rowNumber.className = 'row-number';
-                rowNumber.textContent = row.row_number;
-                rowContainer.appendChild(rowNumber);
-
-                const rowGrid = document.createElement('div');
-                rowGrid.className = 'pattern-grid';
-                rowGrid.style.gridTemplateColumns = `repeat(${row.stitches_per_row}, 40px)`;
-
-                row.stitches.forEach(stitch => {
-                    const stitchElement = document.createElement('div');
-                    stitchElement.className = 'stitch';
-                    
-                    const symbol = STITCH_SYMBOLS[stitch.stitch_type] || '?';
-                    const color = STITCH_COLORS[stitch.stitch_type] || '#000000';
-                    
-                    stitchElement.textContent = symbol;
-                    stitchElement.style.color = color;
-                    stitchElement.title = `第${stitch.stitch_number}针: ${stitch.stitch_type}`;
-                    
-                    rowGrid.appendChild(stitchElement);
-                });
-
-                rowContainer.appendChild(rowGrid);
-                patternElement.appendChild(rowContainer);
+            data.pattern.forEach(item => {
+                if (item.type === 'row') {
+                    const rowContainer = document.createElement('div');
+                    rowContainer.className = 'row-container';
+                    const rowNumber = document.createElement('div');
+                    rowNumber.className = 'row-number';
+                    rowNumber.textContent = item.row_number;
+                    rowContainer.appendChild(rowNumber);
+                    const rowGrid = document.createElement('div');
+                    rowGrid.className = 'pattern-grid';
+                    rowGrid.style.gridTemplateColumns = `repeat(${item.stitches_per_row}, 40px)`;
+                    item.stitches.forEach(stitch => {
+                        const stitchElement = document.createElement('div');
+                        stitchElement.className = 'stitch';
+                        const symbol = STITCH_SYMBOLS[stitch.stitch_type] || '?';
+                        const color = STITCH_COLORS[stitch.stitch_type] || '#000000';
+                        stitchElement.textContent = symbol;
+                        stitchElement.style.color = color;
+                        stitchElement.title = `第${stitch.stitch_number}针: ${stitch.stitch_type}`;
+                        rowGrid.appendChild(stitchElement);
+                    });
+                    rowContainer.appendChild(rowGrid);
+                    patternElement.appendChild(rowContainer);
+                }
             });
-
             updateCurrentRow();
+        }
+
+        // 计数器和高亮只针对row类型
+        let rowIndexes = [];
+        let currentRowIdx = 0; // rowIndexes的索引
+
+        function updateCurrentRow() {
+            const rowCounter = document.getElementById('row-counter');
+            const decrementButton = document.getElementById('decrementButton');
+            const incrementButton = document.getElementById('incrementButton');
+            // 只针对row类型
+            if (!patternData || !Array.isArray(patternData.pattern)) return;
+            rowIndexes = getRowIndexes(patternData.pattern);
+            if (rowIndexes.length === 0) return;
+            // 边界保护
+            if (currentRowIdx < 0) currentRowIdx = 0;
+            if (currentRowIdx >= rowIndexes.length) currentRowIdx = rowIndexes.length - 1;
+            const currentRowNumber = patternData.pattern[rowIndexes[currentRowIdx]].row_number;
+            rowCounter.textContent = currentRowNumber;
+            decrementButton.disabled = currentRowIdx <= 0;
+            incrementButton.disabled = currentRowIdx >= rowIndexes.length - 1;
+
+            // 高亮说明区和图解区的row类型，meta类型不变色
+            instructionLines.forEach((div, idx) => {
+                const item = patternData.pattern[idx];
+                div.classList.remove('active', 'completed');
+                if (item.type === 'row') {
+                    const rowIdx = rowIndexes.indexOf(idx);
+                    if (rowIdx < currentRowIdx) {
+                        div.classList.add('completed');
+                    } else if (rowIdx === currentRowIdx) {
+                        div.classList.add('active');
+                        div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
+                }
+            });
+            // 图解区
+            const patternRows = document.querySelectorAll('.pattern-grid');
+            patternRows.forEach((row, idx) => {
+                row.classList.remove('active', 'completed');
+                if (idx < currentRowIdx) {
+                    row.classList.add('completed');
+                } else if (idx === currentRowIdx) {
+                    row.classList.add('active');
+                    row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            });
+        }
+
+        function incrementRow() {
+            if (currentRowIdx < rowIndexes.length - 1) {
+                currentRowIdx++;
+                updateCurrentRow();
+            }
+        }
+
+        function decrementRow() {
+            if (currentRowIdx > 0) {
+                currentRowIdx--;
+                updateCurrentRow();
+            }
         }
 
         // 初始化函数
         function initialize(title, data) {
             document.getElementById('pattern-title').textContent = title;
             patternData = data;
-            
             renderInstructionsFromJson(data.pattern);
             renderPattern(data);
-            currentRow = 1;
+            rowIndexes = getRowIndexes(data.pattern);
+            currentRowIdx = 0;
             updateCurrentRow();
         }
 
         // 页面加载时加载数据
         window.onload = loadKnittingData;
+
+        // 调试输入兼容 pattern_json 层级
+        function updatePattern() {
+            const debugInput = document.getElementById('debugInput');
+            try {
+                const data = JSON.parse(debugInput.value.trim());
+                const patternData = data.pattern_json ? data.pattern_json : data;
+                validatePatternData(patternData);
+                renderPattern(patternData);
+                renderInstructionsFromJson(patternData.pattern);
+                rowIndexes = getRowIndexes(patternData.pattern);
+                currentRowIdx = 0;
+                updateCurrentRow();
+                console.log('渲染完成');
+            } catch (e) {
+                console.error('错误:', e);
+                alert('更新失败: ' + e.message);
+            }
+        }
     </script>
 </body>
 </html> 

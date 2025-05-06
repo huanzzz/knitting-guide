@@ -84,6 +84,19 @@ body {
     transition: all 0.3s ease;
 }
 
+.instruction-line .instruction-text {
+    flex: 1;
+}
+
+/* meta类型说明的样式 */
+.instruction-line:not(:has(.instruction-row-number)) {
+    background-color: #f5f5f5;
+    border-left: 4px solid #2196F3;
+    margin: 8px 0;
+    padding: 12px;
+    font-style: italic;
+}
+
 .instruction-row-number {
     width: 30px;
     text-align: right;

@@ -5,6 +5,11 @@
     "total_rows": 7,
     "pattern": [
       {
+        "type": "meta",
+        "instruction": "起18针"
+      },
+      {
+        "type": "row",
         "row_number": 1,
         "stitches_per_row": 18,
         "stitches": [
@@ -84,6 +89,7 @@
         "instruction": "第 1 行： 上针"
       },
       {
+        "type": "row",
         "row_number": 2,
         "stitches_per_row": 18,
         "stitches": [
@@ -163,6 +169,7 @@
         "instruction": "第 2 行：下针"
       },
       {
+        "type": "row",
         "row_number": 3,
         "stitches_per_row": 18,
         "stitches": [
@@ -242,6 +249,7 @@
         "instruction": "第 3 行：上针"
       },
       {
+        "type": "row",
         "row_number": 4,
         "stitches_per_row": 18,
         "stitches": [
@@ -321,6 +329,7 @@
         "instruction": "第 4 行：【左上2并1，空加针】到最后1针，1下"
       },
       {
+        "type": "row",
         "row_number": 5,
         "stitches_per_row": 18,
         "stitches": [
@@ -400,6 +409,7 @@
         "instruction": "第 5 和 7 行：上针"
       },
       {
+        "type": "row",
         "row_number": 6,
         "stitches_per_row": 18,
         "stitches": [
@@ -479,6 +489,7 @@
         "instruction": "第 6 行：下针。"
       },
       {
+        "type": "row",
         "row_number": 7,
         "stitches_per_row": 18,
         "stitches": [
