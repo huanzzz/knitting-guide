@@ -1,7 +1,11 @@
 import openai
 import json
 from typing import Dict, List, Any
-from config import get_api_key
+import os
+from dotenv import load_dotenv
+
+# 加载环境变量
+load_dotenv()
 
 class KnittingData:
     """编织数据管理类"""
@@ -36,8 +40,11 @@ class KnittingData:
 
 class KnittingPatternParser:
     def __init__(self):
-        """初始化解析器，使用配置中的API密钥"""
-        self.client = openai.OpenAI(api_key=get_api_key())
+        """初始化解析器，使用环境变量中的API密钥"""
+        api_key = os.getenv('OPENAI_API_KEY')
+        if not api_key:
+            raise ValueError("未找到 OPENAI_API_KEY 环境变量")
+        self.client = openai.OpenAI(api_key=api_key)
 
     def parse_pattern(self, pattern_text: str) -> Dict[str, Any]:
         """解析编织图解文本，返回JSON格式的解析结果"""
