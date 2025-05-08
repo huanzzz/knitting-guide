@@ -179,4 +179,17 @@ body {
 .active .stitch {
     border-color: #90CAF9;
     background-color: #FAFAFA;
+}
+
+.dot-stitch {
+    background: none;
+    color: #999;
+    font-size: 18px;
+    border: none;
+    box-shadow: none;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
 } 

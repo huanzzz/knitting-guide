@@ -31,7 +31,6 @@
 
     <script src="stitch_config.js"></script>
     <script>
-        let currentRow = 1;
         let patternData = null;
         let instructionLines = [];
 
@@ -131,11 +130,118 @@
             });
         }
 
-        // 渲染图解
+        // 计算自适应格子尺寸
+        function getGridSize(stitchesPerRow, containerWidth, maxSize = 40, minSize = 10) {
+            const padding = 40;
+            const availableWidth = containerWidth - padding;
+            let size = Math.floor(availableWidth / stitchesPerRow);
+            if (size > maxSize) size = maxSize;
+            if (size < minSize) size = minSize;
+            return size;
+        }
+
+        // 动态展开stitches（支持stitch_repeat压缩描述）
+        function expandStitches(row) {
+            if (row.stitches) {
+                // 已经是展开的
+                return row.stitches;
+            }
+            if (row.stitch_repeat) {
+                const stitches = [];
+                let count = 0;
+                while (count < row.stitches_per_row) {
+                    for (const repeatItem of row.stitch_repeat) {
+                        for (let i = 0; i < repeatItem.repeat; i++) {
+                            if (count >= row.stitches_per_row) break;
+                            stitches.push({
+                                stitch_number: count + 1,
+                                stitch_type: repeatItem.stitch_type
+                            });
+                            count++;
+                        }
+                    }
+                }
+                return stitches;
+            }
+            return [];
+        }
+
+        // 渲染一行针法，只有当针数大于40时才省略中间格子，省略时渲染前20和后20个格子
+        function renderRowStitches(stitches, gridSize, container, maxShow = 20, isActive = false) {
+            const total = stitches.length;
+            let renderedCount = total;
+            if (total <= 40) {
+                // 全部渲染
+                stitches.forEach(stitch => {
+                    const stitchElement = document.createElement('div');
+                    stitchElement.className = 'stitch';
+                    if (isActive) stitchElement.classList.add('active');
+                    const symbol = STITCH_SYMBOLS[stitch.stitch_type] || '?';
+                    const color = STITCH_COLORS[stitch.stitch_type] || '#000000';
+                    stitchElement.textContent = symbol;
+                    stitchElement.style.color = color;
+                    stitchElement.style.width = gridSize + 'px';
+                    stitchElement.style.height = gridSize + 'px';
+                    stitchElement.title = `第${stitch.stitch_number}针: ${stitch.stitch_type}`;
+                    container.appendChild(stitchElement);
+                });
+            } else {
+                // 渲染前maxShow个
+                for (let i = 0; i < maxShow; i++) {
+                    const stitch = stitches[i];
+                    const stitchElement = document.createElement('div');
+                    stitchElement.className = 'stitch';
+                    if (isActive) stitchElement.classList.add('active');
+                    const symbol = STITCH_SYMBOLS[stitch.stitch_type] || '?';
+                    const color = STITCH_COLORS[stitch.stitch_type] || '#000000';
+                    stitchElement.textContent = symbol;
+                    stitchElement.style.color = color;
+                    stitchElement.style.width = gridSize + 'px';
+                    stitchElement.style.height = gridSize + 'px';
+                    stitchElement.title = `第${stitch.stitch_number}针: ${stitch.stitch_type}`;
+                    container.appendChild(stitchElement);
+                }
+                // ...占位
+                const dot = document.createElement('div');
+                dot.className = 'stitch dot-stitch';
+                if (isActive) dot.classList.add('active');
+                dot.textContent = '...';
+                dot.style.width = gridSize + 'px';
+                dot.style.height = gridSize + 'px';
+                container.appendChild(dot);
+                // 渲染后maxShow个
+                for (let i = total - maxShow; i < total; i++) {
+                    const stitch = stitches[i];
+                    const stitchElement = document.createElement('div');
+                    stitchElement.className = 'stitch';
+                    if (isActive) stitchElement.classList.add('active');
+                    const symbol = STITCH_SYMBOLS[stitch.stitch_type] || '?';
+                    const color = STITCH_COLORS[stitch.stitch_type] || '#000000';
+                    stitchElement.textContent = symbol;
+                    stitchElement.style.color = color;
+                    stitchElement.style.width = gridSize + 'px';
+                    stitchElement.style.height = gridSize + 'px';
+                    stitchElement.title = `第${stitch.stitch_number}针: ${stitch.stitch_type}`;
+                    container.appendChild(stitchElement);
+                }
+                renderedCount = maxShow * 2 + 1;
+            }
+            return renderedCount;
+        }
+
+        // 渲染图解（自适应+折叠，支持高亮...）
         function renderPattern(data) {
             const patternElement = document.getElementById('pattern');
             patternElement.innerHTML = '';
-            data.pattern.forEach(item => {
+            // 获取容器宽度
+            const containerWidth = patternElement.offsetWidth || patternElement.clientWidth || 800;
+            // 计算当前高亮行索引
+            let activeRowIdx = -1;
+            if (typeof currentRowIdx === 'number' && Array.isArray(rowIndexes)) {
+                activeRowIdx = rowIndexes[currentRowIdx];
+            }
+            let gridRowIdx = 0;
+            data.pattern.forEach((item, idx) => {
                 if (item.type === 'row') {
                     const rowContainer = document.createElement('div');
                     rowContainer.className = 'row-container';
@@ -143,21 +249,21 @@
                     rowNumber.className = 'row-number';
                     rowNumber.textContent = item.row_number;
                     rowContainer.appendChild(rowNumber);
+                    // 计算格子尺寸
+                    const gridSize = getGridSize(item.stitches_per_row, containerWidth);
                     const rowGrid = document.createElement('div');
                     rowGrid.className = 'pattern-grid';
-                    rowGrid.style.gridTemplateColumns = `repeat(${item.stitches_per_row}, 40px)`;
-                    item.stitches.forEach(stitch => {
-                        const stitchElement = document.createElement('div');
-                        stitchElement.className = 'stitch';
-                        const symbol = STITCH_SYMBOLS[stitch.stitch_type] || '?';
-                        const color = STITCH_COLORS[stitch.stitch_type] || '#000000';
-                        stitchElement.textContent = symbol;
-                        stitchElement.style.color = color;
-                        stitchElement.title = `第${stitch.stitch_number}针: ${stitch.stitch_type}`;
-                        rowGrid.appendChild(stitchElement);
-                    });
+                    // 动态展开stitches
+                    const stitches = expandStitches(item);
+                    // 判断是否高亮
+                    const isActive = (idx === activeRowIdx);
+                    // 渲染格子并获取实际渲染数量
+                    const renderedCount = renderRowStitches(stitches, gridSize, rowGrid, 20, isActive);
+                    // 设置gridTemplateColumns为实际渲染格子数
+                    rowGrid.style.gridTemplateColumns = `repeat(${renderedCount}, ${gridSize}px)`;
                     rowContainer.appendChild(rowGrid);
                     patternElement.appendChild(rowContainer);
+                    gridRowIdx++;
                 }
             });
             updateCurrentRow();
@@ -256,6 +362,11 @@
                 alert('更新失败: ' + e.message);
             }
         }
+
+        // 监听窗口变化自适应刷新
+        window.addEventListener('resize', () => {
+            if (patternData) renderPattern(patternData);
+        });
     </script>
 </body>
 </html> 
