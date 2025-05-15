@@ -94,7 +94,7 @@ class KnittingPatternParser:
 
         try:
             response = self.client.chat.completions.create(
-                model="gpt-4.1",
+                model="gpt-4",
                 messages=[
                     {"role": "system", "content": "你是一个专业的编织图解解析器，请将编织图解转换为结构化的JSON数据。对于重复的针法，需要展开为具体的每一针。同时，请保持每行编织说明的原始格式，包括所有相关的说明和换行。对于非针法类的说明（如起针、收针、总结等），请将其识别为meta类型，并保持原有顺序。"},
                     {"role": "user", "content": prompt}

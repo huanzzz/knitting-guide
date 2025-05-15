@@ -1,17 +1,43 @@
-from pdf_to_images import pdf_to_images
+import os
+import click
+from pdf_to_images import convert_pdf_to_images
 from image_to_text import images_to_text
-from text_to_json import text_to_json
-import json
+from ocr_post_processor import process_file
 
-# 1. PDF转图片
-image_paths = pdf_to_images('PDF/大吉岭背心-text.pdf', out_dir='imgs')
+@click.group()
+def cli():
+    """编织图解OCR处理工具"""
+    pass
 
-# 2. 图片OCR
-text = images_to_text('imgs')
+@cli.command()
+@click.argument('pdf_file', type=click.Path(exists=True))
+def process_pdf(pdf_file):
+    """处理PDF文件"""
+    # 1. 转换PDF为图片
+    print("正在转换PDF为图片...")
+    convert_pdf_to_images(pdf_file)
+    
+    # 2. OCR识别
+    print("正在进行OCR识别...")
+    images_to_text('imgs')
+    
+    # 3. 后处理
+    print("正在进行文本后处理...")
+    process_file('all_processed_text.txt', 'all_processed_text_corrected.txt')
+    
+    print("处理完成！")
+    print("原始文本保存在: all_processed_text.txt")
+    print("处理后的文本保存在: all_processed_text_corrected.txt")
 
-# 3. AI解析
-json_data = text_to_json(text)
+@cli.command()
+def add_badcase():
+    """添加新的错误案例"""
+    os.system('python3 badcase_cli.py add')
 
-# 4. 保存
-with open('result.json', 'w', encoding='utf-8') as f:
-    json.dump(json_data, f, ensure_ascii=False, indent=2)
+@cli.command()
+def list_badcases():
+    """列出所有错误案例"""
+    os.system('python3 badcase_cli.py list')
+
+if __name__ == '__main__':
+    cli()
