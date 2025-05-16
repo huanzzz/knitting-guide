@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>编织指导</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
     <div class="container">
@@ -29,7 +29,7 @@
         </div>
     </div>
 
-    <script src="stitch_config.js"></script>
+    <script src="./stitch_config.js"></script>
     <script>
         let patternData = null;
         let instructionLines = [];
@@ -37,11 +37,14 @@
         // 加载编织数据
         async function loadKnittingData() {
             try {
-                const response = await fetch('knitting_data.json');
+                console.log('开始加载数据文件...');
+                const response = await fetch('../../data/output/knitting_data.json');
+                console.log('数据文件响应状态:', response.status);
                 if (!response.ok) {
-                    throw new Error('无法加载数据文件');
+                    throw new Error(`无法加载数据文件: ${response.status} ${response.statusText}`);
                 }
                 const data = await response.json();
+                console.log('数据加载成功:', data);
                 
                 if (!data.title || !data.pattern_text || !data.pattern_json) {
                     throw new Error('数据格式不正确');
@@ -76,14 +79,37 @@
             }
             data.pattern.forEach((row, index) => {
                 if (row.type === 'row') {
-                    if (
-                        typeof row.row_number !== 'number' ||
-                        typeof row.stitches_per_row !== 'number' ||
-                        !Array.isArray(row.stitches)
-                    ) {
-                        throw new Error(`第 ${index + 1} 行数据格式错误`);
+                    if (typeof row.row_number !== 'number') {
+                        throw new Error(`第 ${index + 1} 行数据格式错误：缺少行号`);
                     }
-                    if (row.stitches.length !== row.stitches_per_row) {
+                    if (typeof row.stitches_per_row !== 'number') {
+                        throw new Error(`第 ${index + 1} 行数据格式错误：缺少针数`);
+                    }
+                    
+                    // 检查是否有stitches或stitch_repeat
+                    if (!row.stitches && !row.stitch_repeat) {
+                        throw new Error(`第 ${index + 1} 行数据格式错误：缺少针法信息`);
+                    }
+                    
+                    // 如果有stitch_repeat，验证其格式
+                    if (row.stitch_repeat) {
+                        if (!Array.isArray(row.stitch_repeat)) {
+                            throw new Error(`第 ${index + 1} 行数据格式错误：stitch_repeat 必须是数组`);
+                        }
+                        let totalRepeat = 0;
+                        row.stitch_repeat.forEach(item => {
+                            if (typeof item.repeat !== 'number' || typeof item.stitch_type !== 'string') {
+                                throw new Error(`第 ${index + 1} 行数据格式错误：stitch_repeat 项格式不正确`);
+                            }
+                            totalRepeat += item.repeat;
+                        });
+                        if (totalRepeat !== row.stitches_per_row) {
+                            throw new Error(`第 ${index + 1} 行的重复针数(${totalRepeat})与总针数(${row.stitches_per_row})不匹配`);
+                        }
+                    }
+                    
+                    // 如果有stitches，验证其长度
+                    if (row.stitches && row.stitches.length !== row.stitches_per_row) {
                         throw new Error(`第 ${index + 1} 行的针数与 stitches_per_row 不匹配`);
                     }
                 }
@@ -132,37 +158,66 @@
 
         // 计算自适应格子尺寸
         function getGridSize(stitchesPerRow, containerWidth, maxSize = 40, minSize = 10) {
-            const padding = 40;
-            const availableWidth = containerWidth - padding;
-            let size = Math.floor(availableWidth / stitchesPerRow);
-            if (size > maxSize) size = maxSize;
-            if (size < minSize) size = minSize;
+            if (!stitchesPerRow || !containerWidth) return minSize;
+            
+            const padding = 40; // 左右padding
+            const margin = 30;  // 行号宽度
+            const gap = 1;      // 格子间距
+            const availableWidth = containerWidth - padding - margin;
+            
+            // 计算单个格子的理论宽度
+            let size = Math.floor((availableWidth - (stitchesPerRow - 1) * gap) / stitchesPerRow);
+            
+            // 限制在最大最小值之间
+            size = Math.min(Math.max(size, minSize), maxSize);
+            
             return size;
         }
 
         // 动态展开stitches（支持stitch_repeat压缩描述）
         function expandStitches(row) {
-            if (row.stitches) {
-                // 已经是展开的
+            if (!row) return [];
+            
+            // 如果已经有展开的stitches，直接返回
+            if (row.stitches && Array.isArray(row.stitches)) {
                 return row.stitches;
             }
-            if (row.stitch_repeat) {
+            
+            // 如果有stitch_repeat，展开它
+            if (row.stitch_repeat && Array.isArray(row.stitch_repeat)) {
                 const stitches = [];
                 let count = 0;
-                while (count < row.stitches_per_row) {
+                const totalStitches = row.stitches_per_row || 0;
+                
+                // 循环展开直到达到总针数
+                while (count < totalStitches) {
                     for (const repeatItem of row.stitch_repeat) {
-                        for (let i = 0; i < repeatItem.repeat; i++) {
-                            if (count >= row.stitches_per_row) break;
+                        const repeat = repeatItem.repeat || 0;
+                        const stitchType = repeatItem.stitch_type;
+                        
+                        // 展开当前重复项
+                        for (let i = 0; i < repeat; i++) {
+                            if (count >= totalStitches) break;
                             stitches.push({
                                 stitch_number: count + 1,
-                                stitch_type: repeatItem.stitch_type
+                                stitch_type: stitchType
                             });
                             count++;
                         }
+                        
+                        if (count >= totalStitches) break;
                     }
                 }
+                
+                // 验证展开后的针数是否正确
+                if (stitches.length !== totalStitches) {
+                    console.warn(`展开后的针数(${stitches.length})与预期针数(${totalStitches})不匹配`);
+                }
+                
                 return stitches;
             }
+            
+            // 如果没有stitches也没有stitch_repeat，返回空数组
             return [];
         }
 
@@ -170,6 +225,7 @@
         function renderRowStitches(stitches, gridSize, container, maxShow = 20, isActive = false) {
             const total = stitches.length;
             let renderedCount = total;
+            
             if (total <= 40) {
                 // 全部渲染
                 stitches.forEach(stitch => {
@@ -201,7 +257,8 @@
                     stitchElement.title = `第${stitch.stitch_number}针: ${stitch.stitch_type}`;
                     container.appendChild(stitchElement);
                 }
-                // ...占位
+                
+                // 省略号占位
                 const dot = document.createElement('div');
                 dot.className = 'stitch dot-stitch';
                 if (isActive) dot.classList.add('active');
@@ -209,6 +266,7 @@
                 dot.style.width = gridSize + 'px';
                 dot.style.height = gridSize + 'px';
                 container.appendChild(dot);
+                
                 // 渲染后maxShow个
                 for (let i = total - maxShow; i < total; i++) {
                     const stitch = stitches[i];
@@ -233,39 +291,56 @@
         function renderPattern(data) {
             const patternElement = document.getElementById('pattern');
             patternElement.innerHTML = '';
+            
             // 获取容器宽度
             const containerWidth = patternElement.offsetWidth || patternElement.clientWidth || 800;
+            
             // 计算当前高亮行索引
             let activeRowIdx = -1;
             if (typeof currentRowIdx === 'number' && Array.isArray(rowIndexes)) {
                 activeRowIdx = rowIndexes[currentRowIdx];
             }
-            let gridRowIdx = 0;
+            
+            // 渲染每一行
             data.pattern.forEach((item, idx) => {
                 if (item.type === 'row') {
                     const rowContainer = document.createElement('div');
                     rowContainer.className = 'row-container';
+                    
+                    // 添加行号
                     const rowNumber = document.createElement('div');
                     rowNumber.className = 'row-number';
                     rowNumber.textContent = item.row_number;
                     rowContainer.appendChild(rowNumber);
+                    
                     // 计算格子尺寸
                     const gridSize = getGridSize(item.stitches_per_row, containerWidth);
+                    
+                    // 创建网格容器
                     const rowGrid = document.createElement('div');
                     rowGrid.className = 'pattern-grid';
+                    
                     // 动态展开stitches
                     const stitches = expandStitches(item);
+                    
                     // 判断是否高亮
                     const isActive = (idx === activeRowIdx);
+                    const isCompleted = rowIndexes.indexOf(idx) < currentRowIdx;
+                    
+                    if (isActive) rowGrid.classList.add('active');
+                    if (isCompleted) rowGrid.classList.add('completed');
+                    
                     // 渲染格子并获取实际渲染数量
                     const renderedCount = renderRowStitches(stitches, gridSize, rowGrid, 20, isActive);
+                    
                     // 设置gridTemplateColumns为实际渲染格子数
                     rowGrid.style.gridTemplateColumns = `repeat(${renderedCount}, ${gridSize}px)`;
+                    
                     rowContainer.appendChild(rowGrid);
                     patternElement.appendChild(rowContainer);
-                    gridRowIdx++;
                 }
             });
+            
             updateCurrentRow();
         }
 

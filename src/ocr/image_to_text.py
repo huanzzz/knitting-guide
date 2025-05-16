@@ -10,6 +10,9 @@ import re
 # 加载环境变量
 load_dotenv()
 
+# 获取项目根目录
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 def setup_gemini():
     """
     设置 Gemini API
@@ -129,14 +132,19 @@ def images_to_text(image_dir):
     # 用Gemini处理页眉页脚和术语纠错
     processed_text = process_text_with_gemini(merged_text, client)
     
+    # 确保输出目录存在
+    output_dir = os.path.join(ROOT_DIR, 'data', 'processed')
+    os.makedirs(output_dir, exist_ok=True)
+    
     # 保存所有处理结果到一个文件
-    with open('all_processed_text.txt', 'w', encoding='utf-8') as f:
+    output_file = os.path.join(output_dir, 'all_processed_text.txt')
+    with open(output_file, 'w', encoding='utf-8') as f:
         f.write(processed_text)
     
     return processed_text
 
 if __name__ == '__main__':
     # 测试代码
-    image_dir = 'imgs'
+    image_dir = os.path.join(ROOT_DIR, 'data', 'raw', 'imgs')
     text = images_to_text(image_dir)
     print(text)

@@ -32,7 +32,7 @@ class OCRPostProcessor:
         
         # 从correction_rules.py加载规则
         if os.path.exists('correction_rules.py'):
-            spec = importlib.util.spec_from_file_location("correction_rules", "correction_rules.py")
+            spec = importlib.util.spec_from_file_location("correction_rules", os.path.join(os.path.dirname(__file__), "correction_rules.py"))
             rules = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(rules)
             

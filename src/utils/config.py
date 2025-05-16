@@ -1,12 +1,14 @@
 import os
 from pathlib import Path
 import json
+from dotenv import load_dotenv
 
 class Config:
     def __init__(self):
         self.config_dir = Path.home() / '.knitting_config'
         self.config_file = self.config_dir / 'config.json'
         self._ensure_config_exists()
+        load_dotenv()
 
     def _ensure_config_exists(self):
         """确保配置目录和文件存在"""
@@ -15,7 +17,10 @@ class Config:
             self.config_file.write_text('{}')
 
     def get_api_key(self) -> str:
-        """获取API密钥"""
+        """获取API密钥，优先从环境变量获取"""
+        env_api_key = os.getenv('OPENAI_API_KEY')
+        if env_api_key:
+            return env_api_key
         config = self._load_config()
         return config.get('openai_api_key', '')
 
