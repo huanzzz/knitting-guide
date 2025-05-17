@@ -1,5 +1,6 @@
 import os
 from size_extractor import SizeExtractor
+import unittest
 
 def test_size_extractor():
     # 创建测试用例
@@ -45,6 +46,43 @@ def test_size_extractor():
         print(processed_content)
     else:
         print("文件不存在，请检查路径。")
+
+class TestSizeExtractor(unittest.TestCase):
+    def setUp(self):
+        self.extractor = SizeExtractor()
+        
+    def test_extract_sizes(self):
+        test_cases = [
+            # 测试用例1：简单的数字在前格式
+            {
+                "input": "用 3.5mm 环针，起 370 (406 - 442 - 478 - 514 - 586 - 622 - 658)针",
+                "expected": "用 3.5mm 环针，起 406针"
+            },
+            # 测试用例2：文字在前格式
+            {
+                "input": "第72 (72 - 78 - 84 - 84 - 84 - 92 - 92)行和第92 (82 - 100 - 102 - 102 - 102 - 112 - 112) 行各增加一个扣眼",
+                "expected": "第72行和第82 行各增加一个扣眼"
+            },
+            # 测试用例3：带单位的格式
+            {
+                "input": "剩51 (56 - 65 - 71 - 81 - 87 - 92)针",
+                "expected": "剩56针"
+            },
+            # 测试用例4：多个括号的格式
+            {
+                "input": "第20到59 (59 - 63 - 67 - 67 - 67 - 73 - 73)行织平针",
+                "expected": "第20到59行织平针"
+            }
+        ]
+        
+        for i, test_case in enumerate(test_cases, 1):
+            with self.subTest(test_case=i):
+                result = self.extractor.extract_second_size(test_case["input"])
+                self.assertEqual(result, test_case["expected"], 
+                               f"测试用例 {i} 失败：\n输入：{test_case['input']}\n期望：{test_case['expected']}\n实际：{result}")
+
+if __name__ == '__main__':
+    unittest.main()
 
 if __name__ == "__main__":
     test_size_extractor() 

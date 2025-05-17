@@ -1,9 +1,9 @@
 import openai
 import json
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 import os
 from dotenv import load_dotenv
-from .size_extractor import SizeExtractor
+from size_extractor import SizeExtractor
 
 # 加载环境变量
 load_dotenv()
@@ -48,102 +48,59 @@ class KnittingPatternParser:
         self.client = openai.OpenAI(api_key=api_key)
         self.size_extractor = SizeExtractor()
 
-    def calculate_stitch_count(self, stitch_type: str) -> int:
-        """计算单个针法的针数变化"""
-        if stitch_type in ['左上2并1', '左下二并一', '右上二并一', '右下二并一']:
-            return -1  # 2针并1针，净减1针
-        elif stitch_type in ['空加针', '挂针', '加针']:
-            return 1   # 加1针
-        else:
-            return 0   # 普通针法，不改变针数
-
-    def calculate_row_stitches(self, row: Dict) -> int:
-        """计算一行的实际针数"""
-        if row.get('type') != 'row':
+    def calculate_stitch_count(self, row: Dict[str, Any]) -> int:
+        """计算一行的针数"""
+        if not row.get('stitch_repeat'):
             return 0
-
-        # 获取当前行的针数
-        current_stitches = row.get('stitches_per_row')
-        if current_stitches is None:
-            return 0
-
-        # 如果有重复针法，计算重复针法的针数
-        if 'stitch_repeat' in row:
-            total_stitches = 0
-            for repeat_item in row['stitch_repeat']:
-                repeat = repeat_item.get('repeat', 0)
-                stitches = repeat_item.get('stitches', [])
-                # 计算这个重复项的针数
-                for stitch in stitches:
-                    stitch_type = stitch.get('stitch_type', '')
-                    stitch_change = self.calculate_stitch_count(stitch_type)
-                    total_stitches += repeat * stitch_change
-            return total_stitches
-        
-        # 如果是普通针法（如"上针"、"下针"），返回声明的针数
-        return current_stitches
-
-    def validate_row_stitches(self, row: Dict, prev_row: Dict = None) -> bool:
-        """验证一行的针数是否正确"""
-        if row.get('type') != 'row':
-            return True
-
-        # 获取当前行的针数
-        current_stitches = row.get('stitches_per_row')
-        if current_stitches is None:
-            return True
-
-        # 计算实际针数
-        calculated_stitches = self.calculate_row_stitches(row)
-        
-        # 如果有上一行，考虑上一行的针数
-        if prev_row and prev_row.get('type') == 'row':
-            prev_stitches = prev_row.get('stitches_per_row')
-            if prev_stitches is not None:
-                # 如果是普通针法，直接使用声明的针数
-                if 'stitch_repeat' not in row:
-                    calculated_stitches = current_stitches
+            
+        total_stitches = 0
+        for repeat in row['stitch_repeat']:
+            repeat_count = repeat.get('repeat', 0)
+            stitches = repeat.get('stitches', [])
+            
+            # 计算这一组针法的总针数
+            group_stitches = 0
+            for stitch in stitches:
+                stitch_type = stitch.get('stitch_type', '')
+                if stitch_type in ['左上2并1', '左下二并一', '右上二并一', '右下二并一']:
+                    group_stitches -= 1
+                elif stitch_type in ['空加针', '挂针', '加针']:
+                    group_stitches += 1
                 else:
-                    # 如果是重复针法，计算针数变化
-                    calculated_stitches = prev_stitches + calculated_stitches
+                    group_stitches += 1
+            
+            # 将这一组针法的总针数乘以重复次数
+            total_stitches += group_stitches * repeat_count
+            
+        return total_stitches
 
-        # 验证计算出的针数是否与声明的一致
-        if calculated_stitches != current_stitches:
+    def validate_row_stitches(self, row: Dict[str, Any], prev_row: Optional[Dict[str, Any]] = None) -> bool:
+        """验证一行的针数是否合理"""
+        if row.get('type') != 'row':
+            return True
+            
+        declared_stitches = row.get('stitches_per_row', 0)
+        calculated_stitches = self.calculate_stitch_count(row)
+        
+        # 如果计算出的针数为0，可能是没有正确解析针法
+        if calculated_stitches == 0 and row.get('stitch_repeat'):
+            print(f"警告：第{row.get('row_number')}行的针数计算为0")
+            return False
+            
+        # 如果计算出的针数为负数，可能是重复次数计算错误
+        if calculated_stitches < 0:
+            print(f"警告：第{row.get('row_number')}行的针数计算为负数")
+            return False
+            
+        # 如果声明针数和计算针数不一致，可能是重复次数计算错误
+        if declared_stitches != calculated_stitches:
             print(f"警告：第{row.get('row_number')}行的针数计算不一致")
-            print(f"声明针数：{current_stitches}")
+            print(f"声明针数：{declared_stitches}")
             print(f"计算针数：{calculated_stitches}")
             print(f"行内容：{row.get('instruction')}")
-            if 'stitch_repeat' in row:
-                print(f"重复针法：{json.dumps(row['stitch_repeat'], ensure_ascii=False)}")
+            print(f"重复针法：{row.get('stitch_repeat')}")
             return False
-
-        # 验证重复针法的合理性
-        if 'stitch_repeat' in row:
-            total_stitches = 0
-            for repeat_item in row['stitch_repeat']:
-                repeat = repeat_item.get('repeat', 0)
-                stitches = repeat_item.get('stitches', [])
-                
-                # 计算这个重复项的针数
-                for stitch in stitches:
-                    stitch_type = stitch.get('stitch_type', '')
-                    stitch_change = self.calculate_stitch_count(stitch_type)
-                    total_stitches += repeat * stitch_change
-
-                # 验证重复次数是否合理
-                if len(stitches) > 1:  # 如果是针法序列
-                    # 计算每个序列的针数变化
-                    sequence_change = sum(self.calculate_stitch_count(s.get('stitch_type', '')) for s in stitches)
-                    # 计算合理的重复次数
-                    if prev_stitches is not None:
-                        expected_repeat = (current_stitches - 1) // abs(sequence_change) if sequence_change != 0 else 0
-                        if repeat != expected_repeat:
-                            print(f"警告：第{row.get('row_number')}行的重复次数不合理")
-                            print(f"当前重复次数：{repeat}")
-                            print(f"预期重复次数：{expected_repeat}")
-                            print(f"针法序列：{json.dumps(stitches, ensure_ascii=False)}")
-                            return False
-
+            
         return True
 
     def parse_pattern(self, pattern_text: str) -> Dict[str, Any]:
@@ -238,22 +195,37 @@ class KnittingPatternParser:
             json_end = content.rfind('}') + 1
             if json_start >= 0 and json_end > json_start:
                 json_str = content[json_start:json_end]
-                result = json.loads(json_str)
-                
-                # 验证每一行的针数
-                prev_row = None
-                for row in result.get('pattern', []):
-                    if not self.validate_row_stitches(row, prev_row):
-                        print(f"警告：第{row.get('row_number')}行的针数验证失败")
-                    prev_row = row
-                
-                return result
+                try:
+                    result = json.loads(json_str)
+                    
+                    # 验证每一行的针数
+                    prev_row = None
+                    for row in result.get('pattern', []):
+                        if not self.validate_row_stitches(row, prev_row):
+                            print(f"警告：第{row.get('row_number')}行的针数验证失败")
+                        prev_row = row
+                    
+                    return result
+                except json.JSONDecodeError as e:
+                    print(f"JSON解析错误: {str(e)}")
+                    print(f"原始JSON字符串: {json_str}")
+                    return {
+                        "total_rows": 0,
+                        "pattern": []
+                    }
             else:
-                raise ValueError("无法在响应中找到有效的JSON")
+                print("无法在响应中找到有效的JSON")
+                return {
+                    "total_rows": 0,
+                    "pattern": []
+                }
         except Exception as e:
             print(f"解析错误: {str(e)}")
             print(f"原始响应内容: {content}")
-            return {"pattern_json": {}}
+            return {
+                "total_rows": 0,
+                "pattern": []
+            }
 
     def create_knitting_data(self, title: str, pattern_text: str) -> KnittingData:
         """创建编织数据对象"""
