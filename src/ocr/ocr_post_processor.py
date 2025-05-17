@@ -67,26 +67,35 @@ class OCRPostProcessor:
     
     def fix_formatting(self, text: str) -> str:
         """修复格式问题"""
+        # 1. 处理段落结构
+        # 保留标题格式
+        text = re.sub(r'^#\s*(\w+)', r'# \1', text, flags=re.MULTILINE)
+        text = re.sub(r'^##\s*(\w+)', r'## \1', text, flags=re.MULTILINE)
+        
+        # 2. 处理数字格式
+        # 标准化括号内的数字序列
+        text = re.sub(r'(\d+)\s*[（(]\s*(\d+)\s*[-—]\s*(\d+)\s*[-—]\s*(\d+)\s*[-—]\s*(\d+)\s*[-—]\s*(\d+)\s*[-—]\s*(\d+)\s*[-—]\s*(\d+)\s*[)）]', r'\1 (\2-\3-\4-\5-\6-\7-\8)', text)
+        # 标准化单个数字的括号
+        text = re.sub(r'(\d+)\s*[（(]\s*(\d+)\s*[)）]', r'\1 (\2)', text)
+        
+        # 3. 处理段落分隔
+        # 在句号、感叹号、问号后添加空行
+        text = re.sub(r'([。！？])\n', r'\1\n\n', text)
         # 删除多余的空行（保留最多两个连续空行）
         text = re.sub(r'\n{3,}', '\n\n', text)
         
-        # 处理每一行，但保留段落结构
+        # 4. 处理行内格式
+        # 保留段落缩进，但删除行内多余空格
         lines = text.split('\n')
         processed_lines = []
         for line in lines:
-            # 只删除行首尾的空白字符，保留行内的空格
-            processed_line = line.strip()
-            if processed_line:  # 如果不是空行
-                processed_lines.append(processed_line)
-            else:  # 如果是空行，保留它
-                processed_lines.append('')
+            # 保留行首的缩进空格
+            indent = len(line) - len(line.lstrip())
+            processed_line = ' ' * indent + ' '.join(line.strip().split())
+            processed_lines.append(processed_line)
         
-        # 重新组合文本，保留段落结构
+        # 重新组合文本
         text = '\n'.join(processed_lines)
-        
-        # 确保标题格式正确
-        text = re.sub(r'#\s*(\w+)', r'# \1', text)
-        text = re.sub(r'##\s*(\w+)', r'## \1', text)
         
         return text
     

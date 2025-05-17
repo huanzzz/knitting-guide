@@ -1,0 +1,632 @@
+{
+  "total_rows": 74,
+  "pattern": [
+    {
+      "type": "meta",
+      "instruction": "尺码说明：S(M-L-XL-2XL-3XL-4XL)"
+    },
+    {
+      "type": "meta",
+      "instruction": "用 3.5mm 环针，起 406针 = 每根针上 203针 将两根针都放到左手，有活结的棒针现在在前, -将背面棒针抽出(针目滑到环针线上)，工作纱线在右手，织 1 行上针(见“折叠边”)"
+    },
+    {
+      "type": "meta",
+      "instruction": "用 3.5mm 环针，起 406针 = 每根针上 203 针 将背面棒针抽出(针目消到环针线上)，工作纱线在右手，织 1 行上针(见"
+    },
+    {
+      "type": "meta",
+      "instruction": "用 3. 5mm 棒针，起203针 织“折叠边”的 1-7 行，然后回到临时起针 203针，将它们放到第二根 3. 5mm 棒针上，你将在第8 行将这些针目织到一起"
+    },
+    {
+      "type": "meta",
+      "instruction": "用 3. 5mm 棒针和你喜欢的方法起 203针，织“折叠边”的1-7行，在织第 8 行之醒，用第二根 3. 5mm 棒针从起针边缘挑针，你将在第 8 行将这些针目织到一起"
+    },
+    {
+      "type": "row",
+      "row_number": 1,
+      "stitches_per_row": 203,
+      "instruction": "第1行: 上针",
+      "stitch_repeat": [
+        {
+          "repeat": 203,
+          "stitches": [
+            {
+              "stitch_type": "上针"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "row_number": 2,
+      "stitches_per_row": 203,
+      "instruction": "第 2 行: 下针",
+      "stitch_repeat": [
+        {
+          "repeat": 203,
+          "stitches": [
+            {
+              "stitch_type": "下针"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "row_number": 3,
+      "stitches_per_row": 203,
+      "instruction": "第 3行: 上针",
+      "stitch_repeat": [
+        {
+          "repeat": 203,
+          "stitches": [
+            {
+              "stitch_type": "上针"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "row_number": 4,
+      "stitches_per_row": 203,
+      "instruction": "第4行:【左上2 并1，空加针】到最后1针，1 下",
+      "stitch_repeat": [
+        {
+          "repeat": 101,
+          "stitches": [
+            {
+              "stitch_type": "左上2并1"
+            },
+            {
+              "stitch_type": "空加针"
+            }
+          ]
+        },
+        {
+          "repeat": 1,
+          "stitches": [
+            {
+              "stitch_type": "下针"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "row_number": 5,
+      "stitches_per_row": 203,
+      "instruction": "第5和7行: 上针",
+      "stitch_repeat": [
+        {
+          "repeat": 203,
+          "stitches": [
+            {
+              "stitch_type": "上针"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "row_number": 6,
+      "stitches_per_row": 203,
+      "instruction": "第6行: 下针",
+      "stitch_repeat": [
+        {
+          "repeat": 203,
+          "stitches": [
+            {
+              "stitch_type": "下针"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "row_number": 7,
+      "stitches_per_row": 203,
+      "instruction": "第7行: 上针",
+      "stitch_repeat": [
+        {
+          "repeat": 203,
+          "stitches": [
+            {
+              "stitch_type": "上针"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "row_number": 8,
+      "stitches_per_row": 203,
+      "instruction": "第8行: 将织物对折，正面朝你(反面相对)，工作纱线所在棒针在，将两根针上的针目一针对一针织到一起",
+      "stitch_repeat": [
+        {
+          "repeat": 203,
+          "stitches": [
+            {
+              "stitch_type": "并针"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "row_number": 9,
+      "stitches_per_row": 203,
+      "instruction": "第9行(反面): 上针",
+      "stitch_repeat": [
+        {
+          "repeat": 203,
+          "stitches": [
+            {
+              "stitch_type": "上针"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "row_number": 10,
+      "stitches_per_row": 203,
+      "instruction": "第10行: 3下,【(左上2并1) 3次,(空加针，1 下) 5 次，空加针,(右上 2 并1) 3次,1上1】 重复【 】有再8 次，直至剩 20 针，(左上2 并1) 3 次,(空加针，1 下) 5 次，空加针，(右上 2 并1)3次，3 下",
+      "stitch_repeat": [
+        {
+          "repeat": 3,
+          "stitches": [
+            {
+              "stitch_type": "下针"
+            }
+          ]
+        },
+        {
+          "repeat": 8,
+          "stitches": [
+            {
+              "stitch_type": "左上2并1"
+            },
+            {
+              "stitch_type": "左上2并1"
+            },
+            {
+              "stitch_type": "左上2并1"
+            },
+            {
+              "stitch_type": "空加针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "空加针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "空加针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "空加针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "空加针"
+            },
+            {
+              "stitch_type": "右上二并一"
+            },
+            {
+              "stitch_type": "右上二并一"
+            },
+            {
+              "stitch_type": "右上二并一"
+            },
+            {
+              "stitch_type": "上针"
+            }
+          ]
+        },
+        {
+          "repeat": 1,
+          "stitches": [
+            {
+              "stitch_type": "左上2并1"
+            },
+            {
+              "stitch_type": "左上2并1"
+            },
+            {
+              "stitch_type": "左上2并1"
+            },
+            {
+              "stitch_type": "空加针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "空加针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "空加针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "空加针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "空加针"
+            },
+            {
+              "stitch_type": "右上二并一"
+            },
+            {
+              "stitch_type": "右上二并一"
+            },
+            {
+              "stitch_type": "右上二并一"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "row_number": 11,
+      "stitches_per_row": 203,
+      "instruction": "第 11-19 行的所有奇效行: 20 上,【1下，1上】 到最后3针，3 上",
+      "stitch_repeat": [
+        {
+          "repeat": 20,
+          "stitches": [
+            {
+              "stitch_type": "上针"
+            }
+          ]
+        },
+        {
+          "repeat": 90,
+          "stitches": [
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "上针"
+            }
+          ]
+        },
+        {
+          "repeat": 3,
+          "stitches": [
+            {
+              "stitch_type": "上针"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "row_number": 12,
+      "stitches_per_row": 203,
+      "instruction": "第12 行(第一个扣眼): 2 下，空加针，右上2并1，16下,1上,【17 下，1上】到最后 20 针，20 下",
+      "stitch_repeat": [
+        {
+          "repeat": 2,
+          "stitches": [
+            {
+              "stitch_type": "下针"
+            }
+          ]
+        },
+        {
+          "repeat": 1,
+          "stitches": [
+            {
+              "stitch_type": "空加针"
+            },
+            {
+              "stitch_type": "右上二并一"
+            }
+          ]
+        },
+        {
+          "repeat": 16,
+          "stitches": [
+            {
+              "stitch_type": "下针"
+            }
+          ]
+        },
+        {
+          "repeat": 1,
+          "stitches": [
+            {
+              "stitch_type": "上针"
+            }
+          ]
+        },
+        {
+          "repeat": 8,
+          "stitches": [
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "上针"
+            }
+          ]
+        },
+        {
+          "repeat": 20,
+          "stitches": [
+            {
+              "stitch_type": "下针"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "row_number": 14,
+      "stitches_per_row": 203,
+      "instruction": "第14行: 重复 第10行"
+    },
+    {
+      "type": "row",
+      "row_number": 16,
+      "stitches_per_row": 203,
+      "instruction": "第16行: 20下;式1 上，17 下】到最后3针，3 下",
+      "stitch_repeat": [
+        {
+          "repeat": 20,
+          "stitches": [
+            {
+              "stitch_type": "下针"
+            }
+          ]
+        },
+        {
+          "repeat": 1,
+          "stitches": [
+            {
+              "stitch_type": "上针"
+            }
+          ]
+        },
+        {
+          "repeat": 8,
+          "stitches": [
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            },
+            {
+              "stitch_type": "下针"
+            }
+          ]
+        },
+        {
+          "repeat": 3,
+          "stitches": [
+            {
+              "stitch_type": "下针"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "row_number": 18,
+      "stitches_per_row": 203,
+      "instruction": "第18行: 重复 第 10行"
+    },
+    {
+      "type": "row",
+      "row_number": 20,
+      "stitches_per_row": 203,
+      "instruction": "第 20 到 59 行织平针， 同时 每 20 行织扣眼如下: 行32，52和 (扣眼行): 2 下，空加针，右上 2 并1 下针到展 重复第40到第59行再1次，将在第72 行增加一个扣眼; 记得行数将顺延20行 长歌: 重复第 40到第59行再2次，将在第72 行和第82 行各增加一个扣眼; 记得行数将顺延40行 所有版本: 第60行:43下, 收8针，下针到剩56针,收8针，平针到底 一一左前片 43针,后片 83针，右前片 43针"
+    },
+    {
+      "type": "row",
+      "row_number": 62,
+      "stitches_per_row": 45,
+      "instruction": "第62行: 1下,右上2并1，下针到帮 剩45针",
+      "stitch_repeat": [
+        {
+          "repeat": 1,
+          "stitches": [
+            {
+              "stitch_type": "下针"
+            }
+          ]
+        },
+        {
+          "repeat": 1,
+          "stitches": [
+            {
+              "stitch_type": "右上二并一"
+            }
+          ]
+        },
+        {
+          "repeat": 43,
+          "stitches": [
+            {
+              "stitch_type": "下针"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "row_number": 64,
+      "stitches_per_row": 42,
+      "instruction": "第64到69行: 重复第 62行和 第63行再3次 剩42针 沿视窗共织了4次减针"
+    },
+    {
+      "type": "row",
+      "row_number": 70,
+      "stitches_per_row": 42,
+      "instruction": "第70行:下针",
+      "stitch_repeat": [
+        {
+          "repeat": 42,
+          "stitches": [
+            {
+              "stitch_type": "下针"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "row_number": 72,
+      "stitches_per_row": 41,
+      "instruction": "第72行:重复第 62行 剩41 针 沿视窗共织了5次减针"
+    },
+    {
+      "type": "row",
+      "row_number": 74,
+      "stitches_per_row": 41,
+      "instruction": "第74行: 下针",
+      "stitch_repeat": [
+        {
+          "repeat": 41,
+          "stitches": [
+            {
+              "stitch_type": "下针"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
