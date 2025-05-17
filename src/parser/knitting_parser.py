@@ -3,6 +3,7 @@ import json
 from typing import Dict, List, Any
 import os
 from dotenv import load_dotenv
+from .size_extractor import SizeExtractor
 
 # 加载环境变量
 load_dotenv()
@@ -45,6 +46,7 @@ class KnittingPatternParser:
         if not api_key:
             raise ValueError("未找到 OPENAI_API_KEY 环境变量")
         self.client = openai.OpenAI(api_key=api_key)
+        self.size_extractor = SizeExtractor()
 
     def calculate_stitch_count(self, stitch_type: str) -> int:
         """计算单个针法的针数变化"""
@@ -146,6 +148,9 @@ class KnittingPatternParser:
 
     def parse_pattern(self, pattern_text: str) -> Dict[str, Any]:
         """解析编织图解文本，返回JSON格式的解析结果"""
+        # 首先提取第二个尺码的数据
+        processed_text = self.size_extractor.process_knitting_pattern(pattern_text)
+        
         stitch_types = [
             '上针', '下针', '空针', '空加针', '挂针', '加针', '并针', '反针', '绞针', '长针', '引线',
             '左上2并1', '左下二并一', '右上二并一', '右下二并一', 'M1L', 'M1R', 'M1LP', 'M1RP'
@@ -216,7 +221,7 @@ class KnittingPatternParser:
         6. 只输出一份有效的 JSON，不要有多余内容，不要有 markdown 代码块标记。
 
         原始编织图解如下：
-        {pattern_text}
+        {processed_text}
         """
         try:
             response = self.client.chat.completions.create(
