@@ -1,3 +1,51 @@
+# Knitting Counter PRD (Product Requirements Document)
+
+## 1. Project Background
+The knitting counter page is designed to help users view knitting patterns while counting current knitting rows during the knitting process, enhancing knitting efficiency and experience.
+
+## 2. Main Functional Requirements
+
+### 1. Preview Original Files
+- Support previewing original knitting pattern PDFs or images with left/right page navigation.
+- Display one page at a time, users can navigate through pages using buttons.
+
+### 2. Extract Size-Specific Knitting Pattern Content (extracted sizes)
+- Display knitting pattern content by sections.
+- Show section titles and detailed content.
+- Content area is scrollable up and down.
+- When clicking on a section, highlight that section text and sync with the counter below.
+- For the currently knitting section, display a "knitting" tag next to the title.
+
+### 3. Knitting Counter
+- Before starting knitting, display a "Start Knitting" button.
+- After clicking "Start Knitting", display the counter.
+- Counter can be incremented/decremented, showing current row, start row, and end row.
+- Start row and end row are editable; after user editing, save as custom row_counts.
+- Counter minimum value is the start row, maximum is unlimited.
+- Each knitting section has independent counter data.
+
+### 4. Knitting Tag Logic
+- After user clicks "Start Knitting", the current section displays a knitting tag.
+- When current row is less than or equal to end row, display knitting tag.
+
+## 3. Technical Implementation
+- Frontend: Vue 3 + Vite, component-based development.
+- Backend: Flask, providing row_counts, extracted_sizes, images and other APIs.
+- Frontend-backend separation, APIs accessed via axios/fetch.
+- User custom data can be persisted using localStorage.
+
+## 4. Interaction Guidelines
+- Three-column layout: preview area, content area, and counter area.
+- Content area click to switch highlighting and counter.
+- Counter supports increment/decrement, editing, and saving.
+
+## 5. Future Extensions
+- Support PDF preview
+- Multi-user/multi-project switching
+- Progress export/sharing
+
+---
+
 # 编织计数器 PRD（产品需求文档）
 
 ## 1. 项目背景
@@ -22,6 +70,7 @@
 - 计数器可加减，显示当前行、起始行、结束行。
 - 起始行、结束行可编辑，用户编辑后保存为自定义 row_counts。
 - 计数器最小值为起始行，最大不限。
+- 每一个编织部分有独立的计数器数据
 
 ### 4. knitting 标签逻辑
 - 用户点击"开始编织"后，当前部分显示 knitting 标签。
