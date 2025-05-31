@@ -1,0 +1,190 @@
+{
+  "total_rows": 74,
+  "pattern": [
+    {
+      "type": "meta",
+      "instruction": "尺码说明：S(M-L-XL-2XL-3XL-4XL)"
+    },
+    {
+      "type": "meta",
+      "instruction": "用 3.5mm 环针，起 406针 = 每根针上 203针 将两根针都放到左手，有活结的棒针现在在前, -将背面棒针抽出(针目滑到环针线上)，工作纱线在右手，织 1 行上针(见“折叠边”)"
+    },
+    {
+      "type": "meta",
+      "instruction": "用 3.5mm 环针，起 406针 = 每根针上 203 针 将背面棒针抽出(针目消到环针线上)，工作纱线在右手，织 1 行上针(见"
+    },
+    {
+      "type": "meta",
+      "instruction": "用 3. 5mm 棒针，起203针 织“折叠边”的 1-7 行，然后回到临时起针 203针，将它们放到第二根 3. 5mm 棒针上，你将在第8 行将这些针目织到一起"
+    },
+    {
+      "type": "meta",
+      "instruction": "用 3. 5mm 棒针和你喜欢的方法起 203针，织“折叠边”的1-7行，在织第 8 行之醒，用第二根 3. 5mm 棒针从起针边缘挑针，你将在第 8 行将这些针目织到一起"
+    },
+    {
+      "type": "row",
+      "row_number": 1,
+      "stitches_per_row": 203,
+      "instruction": "上针"
+    },
+    {
+      "type": "row",
+      "row_number": 2,
+      "stitches_per_row": 203,
+      "instruction": "下针"
+    },
+    {
+      "type": "row",
+      "row_number": 3,
+      "stitches_per_row": 203,
+      "instruction": "上针"
+    },
+    {
+      "type": "row",
+      "row_number": 4,
+      "stitches_per_row": 203,
+      "instruction": "【左上2 并1，空加针】到最后1针，1 下",
+      "stitch_repeat": [
+        {
+          "repeat": 101,
+          "stitches": [
+            {
+              "stitch_type": "左上2并1"
+            },
+            {
+              "stitch_type": "空加针"
+            }
+          ]
+        },
+        {
+          "repeat": 1,
+          "stitches": [
+            {
+              "stitch_type": "下针"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "row_number": 5,
+      "stitches_per_row": 203,
+      "instruction": "上针"
+    },
+    {
+      "type": "row",
+      "row_number": 6,
+      "stitches_per_row": 203,
+      "instruction": "下针"
+    },
+    {
+      "type": "row",
+      "row_number": 7,
+      "stitches_per_row": 203,
+      "instruction": "上针"
+    },
+    {
+      "type": "row",
+      "row_number": 8,
+      "stitches_per_row": 203,
+      "instruction": "将织物对折，正面朝你(反面相对)，工作纱线所在棒针在，将两根针上的针目一针对一针织到一起"
+    },
+    {
+      "type": "row",
+      "row_number": 9,
+      "stitches_per_row": 203,
+      "instruction": "上针"
+    },
+    {
+      "type": "row",
+      "row_number": 10,
+      "stitches_per_row": 203,
+      "instruction": "3下,【(左上2并1) 3次,(空加针，1 下) 5 次，空加针,(右上 2 并1) 3次,1上1】 重复【 】有再8 (9) 次，直至剩 20 针，(左上2 并1) 3 次,(空加针，1 下) 5 次，空加针，(右上 2 并1)3次，3 下"
+    },
+    {
+      "type": "row",
+      "row_number": 11,
+      "stitches_per_row": 203,
+      "instruction": "20 上,【1下，1上】 到最后3针，3 上"
+    },
+    {
+      "type": "row",
+      "row_number": 12,
+      "stitches_per_row": 203,
+      "instruction": "2 下，空加针，右上2并1，16下,1上,【17 下，1上】到最后 20 针，20 下"
+    },
+    {
+      "type": "row",
+      "row_number": 14,
+      "stitches_per_row": 203,
+      "instruction": "重复 第10行"
+    },
+    {
+      "type": "row",
+      "row_number": 16,
+      "stitches_per_row": 203,
+      "instruction": "20下;式1 上，17 下】到最后3针，3 下"
+    },
+    {
+      "type": "row",
+      "row_number": 18,
+      "stitches_per_row": 203,
+      "instruction": "重复 第 10行"
+    },
+    {
+      "type": "row",
+      "row_number": 20,
+      "stitches_per_row": 203,
+      "instruction": "织平针"
+    },
+    {
+      "type": "row",
+      "row_number": 32,
+      "stitches_per_row": 203,
+      "instruction": "2 下，空加针，右上 2 并1 下针到展"
+    },
+    {
+      "type": "row",
+      "row_number": 52,
+      "stitches_per_row": 203,
+      "instruction": "2 下，空加针，右上 2 并1 下针到展"
+    },
+    {
+      "type": "row",
+      "row_number": 60,
+      "stitches_per_row": 203,
+      "instruction": "43下, 收8针，下针到剩56针,收8针，平针到底 一一左前片 43针,后片 83 针，右前片 43 针"
+    },
+    {
+      "type": "row",
+      "row_number": 62,
+      "stitches_per_row": 203,
+      "instruction": "1下,右上2并1，下针到帮 剩45针"
+    },
+    {
+      "type": "row",
+      "row_number": 64,
+      "stitches_per_row": 203,
+      "instruction": "重复第 62行和 第63行再3次 剩42针 沿视窗共织了4次减针"
+    },
+    {
+      "type": "row",
+      "row_number": 70,
+      "stitches_per_row": 203,
+      "instruction": "下针"
+    },
+    {
+      "type": "row",
+      "row_number": 72,
+      "stitches_per_row": 203,
+      "instruction": "重复第 62行 剩41 针 沿视窗共织了5次减针"
+    },
+    {
+      "type": "row",
+      "row_number": 74,
+      "stitches_per_row": 203,
+      "instruction": "下针"
+    }
+  ]
+}

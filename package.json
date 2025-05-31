@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.4",
+    "vite": "^6.3.5"
+  },
+  "dependencies": {
+    "element-plus": "^2.9.11"
+  }
+}

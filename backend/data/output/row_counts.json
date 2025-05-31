@@ -1,0 +1,83 @@
+{
+  "sections": [
+    {
+      "section_title": "衣身",
+      "row_count": 0,
+      "start_row": null,
+      "end_row": null
+    },
+    {
+      "section_title": "折叠边",
+      "row_count": 8,
+      "start_row": 1,
+      "end_row": 8
+    },
+    {
+      "section_title": "蕾丝花样",
+      "row_count": 51,
+      "start_row": 9,
+      "end_row": 59
+    },
+    {
+      "section_title": "左前片",
+      "row_count": 14,
+      "start_row": 61,
+      "end_row": 74
+    },
+    {
+      "section_title": "左前领窝",
+      "row_count": 12,
+      "start_row": 75,
+      "end_row": 86
+    },
+    {
+      "section_title": "左前肩带",
+      "row_count": 35,
+      "start_row": 88,
+      "end_row": 122
+    },
+    {
+      "section_title": "后片",
+      "row_count": 11,
+      "start_row": 62,
+      "end_row": 72
+    },
+    {
+      "section_title": "后领窝",
+      "row_count": 22,
+      "start_row": 74,
+      "end_row": 95
+    },
+    {
+      "section_title": "左后片",
+      "row_count": 11,
+      "start_row": 76,
+      "end_row": 86
+    },
+    {
+      "section_title": "左后肩带",
+      "row_count": 35,
+      "start_row": 88,
+      "end_row": 122
+    },
+    {
+      "section_title": "右后片",
+      "row_count": 11,
+      "start_row": 76,
+      "end_row": 86
+    },
+    {
+      "section_title": "右后肩带",
+      "row_count": 35,
+      "start_row": 88,
+      "end_row": 122
+    },
+    {
+      "section_title": "连接肩部",
+      "row_count": 0,
+      "start_row": null,
+      "end_row": null
+    }
+  ],
+  "total_rows": 245
+}
